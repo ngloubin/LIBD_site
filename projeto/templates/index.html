@@ -3,66 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detecção de Sinais em Libras</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>SINAL AI - FOGUETÃO Group</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
+        .info-section {
+            text-align: center;
+            margin: 20px 0;
         }
-        .container {
-            max-width: 900px;
+        .info-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: #555; /* Letras mais escuras */
+            font-weight: 500;
+            padding: 15px;
+            border-radius: 5px;
+            max-width: 800px; /* Campo mais esticado pros lados */
+            margin: 0 auto 10px auto;
+        }
+        .info-text strong {
+            color: #333;
+        }
+        .beta-notice {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #ff9800; /* Laranja pra destacar */
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 800px; /* Campo mais esticado pros lados */
             margin: 0 auto;
-            padding: 20px;
-        }
-        .btn-primary {
-            background-color: #1e88e5;
-            border: none;
-        }
-        .btn-secondary {
-            background-color: #616161;
-            border: none;
-        }
-        .btn-success {
-            background-color: #43a047;
-            border: none;
-        }
-        .alert {
-            margin-top: 20px;
-        }
-        .badge {
-            font-size: 1.1em;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center mb-4">Detecção de Sinais em Libras</h1>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <img id="video" class="img-fluid rounded" src="" alt="Feed de vídeo" style="display: none;">
+    <div class="app-container">
+        <!-- Header with branding -->
+        <header class="header">
+            <div class="brand">
+                <h1 class="logo">
+                    <span class="sinal-ai">SINAL AI</span>
+                    <span class="rocket">🚀</span>
+                </h1>
+                <p class="tagline">Detecção inteligente de sinais em LIBRAS</p>
             </div>
-        </div>
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-8 text-center">
-                <button id="start" class="btn btn-primary me-2">Iniciar Gravação</button>
-                <button id="stop" class="btn btn-secondary me-2" disabled>Parar Gravação</button>
-                <button id="formar_tempo_real" class="btn btn-success me-2" disabled>Formar com Tempo Real</button>
-                <button id="formar_video" class="btn btn-success" disabled>Formar com Vídeo</button>
+        </header>
+
+        <!-- Main content area -->
+        <main class="main-content">
+            <!-- Video feed section -->
+            <section class="video-container">
+                <div class="video-wrapper">
+                    <video id="video" autoplay playsinline class="video-feed"></video>
+                    <div class="video-overlay">
+                        <span class="status-indicator"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info section -->
+            <section class="info-section">
+                <p class="info-text">Este modelo detecta apenas as letras de LIBRAS: <strong>A, T, E, O, C, H, I</strong>. Forme palavras como <strong>OI</strong>, <strong>TCHAU</strong> ou <strong>ATE</strong>.Tenha paciência ao fazer os sinais para que o nosso modelo consiga detctar bem todos os sinais. Grave vídeos com boa iluminação. Em caso de erro, aguarde 15 segundos e tente novamente.</p>
+                <p class="beta-notice">O site está em versão beta ele pode cometer erros.</p>
+            </section>
+
+            <!-- Controls section -->
+            <section class="controls-section">
+                <div class="button-group">
+                    <button id="startBtn" class="btn btn-success">
+                        <span class="btn-icon">▶</span>
+                        Iniciar Gravação
+                    </button>
+                    <button id="stopBtn" class="btn btn-danger">
+                        <span class="btn-icon">⏹</span>
+                        Parar Gravação
+                    </button>
+                    <button id="formVideoBtn" class="btn btn-primary">
+                        <span class="btn-icon">✨</span>
+                        Formar Palavras
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results section -->
+            <section class="results-section">
+                <div class="result-card">
+                    <h3 class="result-title">Resultado da Análise</h3>
+                    <div class="result-content">
+                        <p id="word" class="result-word"></p>
+                        <div id="error" class="result-error"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-brand">
+                <span class="company-name">FOGUETÃO Group</span>
             </div>
-        </div>
-        <div class="row justify-content-center mt-3">
-            <div class="col-md-8">
-                <p><strong>Palavras Formadas:</strong> <span id="words" class="badge bg-success">Nenhuma</span></p>
-            </div>
-        </div>
-        <div id="loader" class="text-center mt-3" style="display: none;">
-            <div class="spinner-border text-primary" role="status"></div>
-        </div>
-        <div id="error" class="alert alert-danger mt-3" style="display: none;"></div>
+        </footer>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script src="/static/script.js"></script>
 </body>
 </html>
