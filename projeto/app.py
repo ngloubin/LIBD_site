@@ -4,11 +4,15 @@ import cv2
 import numpy as np
 from groq import Groq
 import os
+from dotenv import load_dotenv
 import threading
 import logging
 import time
 import re
 from threading import Lock
+
+# Carregar variáveis de ambiente
+load_dotenv()
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO)
@@ -16,36 +20,40 @@ logger = logging.getLogger(__name__)
 
 # Configurações
 MODEL = YOLO("yolo11s.pt")  # Modelo pré-treinado YOLO11s
-MODEL_PATH = "best77.onnx"    # Dados treinados no formato ONNX
+MODEL_PATH = "best77.onnx"  # Dados treinados no formato ONNX
 CONF_THRESHOLD = 0.3
 SINAIS = {0: "A", 1: "O", 2: "H", 3: "C", 4: "I", 5: "T", 6: "E", 7: "U"}
-GROQ_API_KEY = "sua chave API aqui"
 MAX_CONCURRENT = 2
 current_processing = 0
 processing_lock = Lock()
 
-# Verificar GROQ_API_KEY
-if not GROQ_API_KEY:
-    logger.error("GROQ_API_KEY não configurada. Insira uma chave válida no código.")
-    raise ValueError("GROQ_API_KEY não configurada. Insira uma chave válida no código.")
-logger.info(f"GROQ_API_KEY configurada: {GROQ_API_KEY[:4]}...{GROQ_API_KEY[-4:]}")
+# 🔐 Obter API Key da variável de ambiente
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# Carregar modelo YOLO11s com dados treinados no formato ONNX
+# Verificar se a chave foi carregada
+if not GROQ_API_KEY:
+    logger.error("GROQ_API_KEY não configurada. Crie um arquivo .env e defina GROQ_API_KEY=<sua chave>")
+    raise ValueError("GROQ_API_KEY não configurada. Verifique seu arquivo .env.")
+
+logger.info(f"GROQ_API_KEY carregada: {GROQ_API_KEY[:4]}...{GROQ_API_KEY[-4:]}")
+
+# Carregar modelo YOLO com dados ONNX
 try:
-    logger.info(f"Carregando modelo YOLO11s com dados treinados de {MODEL_PATH}")
-    model = YOLO(MODEL_PATH, task='detect')  # Carrega diretamente o modelo ONNX
-    logger.info("Modelo YOLO11s carregado com sucesso")
+    logger.info(f"Carregando modelo YOLO com {MODEL_PATH}")
+    model = YOLO(MODEL_PATH, task='detect')
+    logger.info("Modelo YOLO carregado com sucesso")
 except Exception as e:
     logger.error(f"Erro ao carregar o modelo YOLO: {e}")
     raise
 
-# Cliente Groq
+# Configurar cliente Groq
 try:
     client = Groq(api_key=GROQ_API_KEY)
     logger.info("Cliente Groq configurado com sucesso")
 except Exception as e:
     logger.error(f"Erro ao configurar o cliente Groq: {e}")
     raise
+
 
 app = Flask(__name__)
 
