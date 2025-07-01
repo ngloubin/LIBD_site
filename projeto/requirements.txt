@@ -6,3 +6,5 @@ numpy
 groq
 python-dotenv
 PyYAML
+onnx
+onnxruntime
