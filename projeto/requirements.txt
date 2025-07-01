@@ -1,5 +1,8 @@
 Flask
+gunicorn
 ultralytics
-opencv-python-headless
-groq
+opencv-python
 numpy
+groq
+python-dotenv
+PyYAML
